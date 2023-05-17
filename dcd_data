@@ -1,3 +1,4 @@
+#the DATA from uboot-alientek/board/freescale/mx6ull_alientek_emmc/imximage.cfg
 DATA 4 0x020c4068 0xffffffff
 DATA 4 0x020c406c 0xffffffff
 DATA 4 0x020c4070 0xffffffff

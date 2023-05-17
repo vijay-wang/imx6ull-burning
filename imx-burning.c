@@ -7,8 +7,16 @@
 
 #define DCD_ADDRESS "dcd_address"
 #define DCD_VALUE "dcd_value"
-#define DCD_PAIRS 60
+#define DCD_PAIRS 60 //all clocks,addr and value
 
+/*About setting values of the members
+ *you can refer to IMX6ULL REFERENCE
+ *MANNUAL Chapter 8 Program image
+ *+---------------------------------------------------------------------------------------
+ *| IVT 32B | BOOT DATA 12B | 2540B zero | DCD 488B |        Application data            |
+ *+---------------------------------------------------------------------------------------
+ *|---------------> 3K <----------------------------|------> 0x87800000-end ------------>|
+ */
 struct image_IVT {
 	unsigned long header;
 	unsigned long entry;
@@ -130,31 +138,31 @@ int main(int argc, char *argv[])
 
 	struct firmware_header header = {
 		.ivt = {
-			.header	  = 0XD1200041,
-			.entry	  = 0X80001000,
+			.header	  = 0X402000D1,
+			.entry	  = 0X87800000,
 			.reserved1 = 0X00000000,
-			.dcd	  = 0X7FFFFE18,
-			.boot_data = 0X80000420,
-			.self	  = 0X80000400,
+			.dcd	  = 0X877FFE18,
+			.boot_data = 0X877FF420,
+			.self	  = 0X877FF400,
 			.csf	  = 0X00000000,
 			.reserved2 = 0X00000000,	
 		},
 
 		.boot_data = {
-			.start = 0X80000000,
+			.start = 0X877FF000,
 			.plugin_flag = 0X00000000,
 		},
 
 		.dcd = {
-			.header = 0XD2E80141,
-			.command_format = 0XCCE40114,
+			.header = 0X40E801D2,
+			.command_format = 0X04E401CC,
 		},
 	};
 
-	header.boot_data.length = atoi(cmd_out);
+	header.boot_data.length = atoi(cmd_out) + 4096;
 
 
-	FILE *fd = fopen("bin_test", "wrba");
+	FILE *fd = fopen("spl", "wrba");
 
 	fwrite(&header.ivt.header, 4, 1, fd);
 	fwrite(&header.ivt.entry, 4, 1, fd);
